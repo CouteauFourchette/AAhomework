@@ -44,7 +44,7 @@ describe Board do
 
     it "raises 'Invalid starting cup' error if the entered position is not on the board" do
       expect do
-        board.valid_move?(-1)
+        board.valid_move?(0)
       end.to raise_error("Invalid starting cup")
     end
   end
