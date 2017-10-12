@@ -1,6 +1,10 @@
 # App Academy Homeworks 📝
 
 ### Week 2
+
+* W2D3
+  * Big O complexity
+
 * W2D3
   * Dessert rspecs
 
