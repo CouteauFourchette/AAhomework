@@ -1,8 +1,11 @@
-# App Academy Homeworks 📝
+# App Academy Homework 📝
 
 ### Week 2
 
-* W2D3
+* W2D5
+  * LRU Cache
+
+* W2D4
   * Big O complexity
 
 * W2D3
