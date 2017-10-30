@@ -1,0 +1,32 @@
+.form {
+  // background-color: blue;
+  position: relative;
+  width: 500px;
+  margin: 50px auto 100px auto;
+
+  input[type='text'], input[type='password'], textarea {
+    padding: 15px;
+    border: 1px solid $secondary;
+    width: 100%;
+    margin: 5px;
+    color: $dark-grey;
+  }
+
+  input::-webkit-input-placeholder, textarea::-webkit-input-placeholder {
+    color: $secondary;
+    font-size: 0.875em;
+  }
+
+  label {
+    padding: 10px;
+    font-size: 12px;
+    color: $secondary;
+  }
+
+  .submit {
+    width: 100%;
+    text-align: center;
+    background: $secondary;
+    border: 1px solid $secondary;
+  }
+}

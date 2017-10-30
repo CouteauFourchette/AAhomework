@@ -1,0 +1,33 @@
+table {
+  border: none;
+  border-collapse: collapse;
+  width: 100%;
+
+  .table-header {
+    background-color: $secondary;
+    color: $white;
+  }
+
+  tr:nth-child(odd) {
+    background-color: $light-grey;
+  }
+
+  th {
+    font-weight: 400;
+    padding: 10px;
+    text-align: left;
+  }
+
+  td {
+    padding: 10px;
+  }
+
+  .button {
+    margin: 0px;
+  }
+
+  .table-buttons {
+    display: flex;
+    justify-content: flex-end;
+  }
+}

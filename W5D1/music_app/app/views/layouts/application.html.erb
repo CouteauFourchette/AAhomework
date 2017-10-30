@@ -10,40 +10,44 @@
 
   <body>
     <header>
-      <a href="<%= bands_url %>" ><h1> Music App </h1> </a>
+      <a href="<%= bands_url %>"><h1 class='title'> Music App </h1> </a>
+      <% if logged_in? %>
       <ul class='sections'>
-
-        <li><a href="<%= bands_url %>" <% if controller?("bands") %> class="selected" <% end %> > bands </a></li>
-        <li><a href="<%= albums_url %>" <% if controller?("albums") %> class="selected" <% end %>> albums </a></li>
-        <li><a href="<%= tracks_url %>" <% if controller?("tracks") %> class="selected" <% end %>> tracks </a></li>
+        <li><a href="<%= bands_url %>"  class='<% if controller?("bands") %> selected <% end %>  button-white'> bands </a></li>
+        <li><a href="<%= albums_url %>" class='<% if controller?("albums") %> selected <% end %>  button-white'> albums </a></li>
+        <li><a href="<%= tracks_url %>" class='<% if controller?("tracks") %> selected <% end %>  button-white'> tracks </a></li>
       </ul>
-      <ul id='log_in_info'>
+      <% end %>
+      <ul class='user_info'>
         <% if logged_in? %>
-        <li><a href="<%= user_url(current_user) %>"> <%= current_user.email %> </a> </li>
+        <li class='button'><a href="<%= user_url(current_user) %>"> <%= current_user.email %> </a> </li>
         <li>
           <form action="<%= session_url %>" method="post" >
             <%= auth_token %>
             <input type="hidden" name='_method' value='DELETE'>
-            <input type="submit" value="log out">
+            <input type="submit" value="log out" class='button-white'>
           </form>
       </li>
         <% else %>
       <li>
         <form action="<%= new_session_url %>" method="get" >
           <%= auth_token %>
-          <input type="submit" value="sign in">
+          <input type="submit" value="sign in" class='button-white'>
         </form>
     </li>
 
       <li>
         <form action="<%= new_user_url %>" method="get" >
           <%= auth_token %>
-          <input type="submit" value="sign up">
+          <input type="submit" value="sign up" class='button-white'>
         </form>
     </li>
         <% end %>
       </ul>
     </header>
-    <%= yield %>
+
+    <main>
+      <%= yield %>
+    </main>
   </body>
 </html>

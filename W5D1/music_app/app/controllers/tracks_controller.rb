@@ -1,9 +1,11 @@
 class TracksController < ApplicationController
   def index
-    if params[:band_id]
-      @bands = [Band.includes(albums: :tracks).find_by(id: params[:band_id])]
+    if params[:album_id]
+      @albums = [Album.includes(:tracks, :band).find_by(id: params[:album_id])]
+      # @bands = [Band.includes(albums: :tracks).find_by(id: params[:band_id])]
     else
-      @bands = Band.all.includes(albums: :tracks)
+      @albums = Album.all.includes(:tracks, :band).order('bands.name ASC')
+      # @bands = Band.all.includes(albums: :tracks)
     end
   end
 

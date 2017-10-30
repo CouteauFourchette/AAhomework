@@ -16,7 +16,7 @@ input::-webkit-input-placeholder, textarea::-webkit-input-placeholder {
 
 }
 
-input[type='text'], input[type='submit'], input[type='password'] {
+input[type='text'], input[type='password'] {
   font-size: 0.875em;
   width: 470px;
   height: 50px;
@@ -35,12 +35,13 @@ input[type='text'], input[type='submit'], input[type='password'] {
 
 .submit {
   width: 502px;
-  padding: 0;
-  margin: -5px 0px 0px 0px;
-
+  height: 50px;
+  padding: 0px 0px 0px 0px;
+  // margin: -5px 0px 0px 0px;
+  background: $secondary;
   font-family: 'Lato', sans-serif;
   font-size: 0.875em;
-  color: #b3aca7;
+  color: white;
   outline:none;
   cursor: pointer;
   border: solid 1px #b3aca7;
