@@ -31,7 +31,7 @@ albums.each do |album|
       album_id: album.id,
       title: Faker::Superhero.power,
       ord: i,
-      lyrics: Faker::ChuckNorris.fact,
+      lyrics: Faker::Hacker.say_something_smart,
       regular: [true, false].sample
     )
   end

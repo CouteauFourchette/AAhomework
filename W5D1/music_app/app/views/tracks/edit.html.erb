@@ -10,19 +10,17 @@
     <label for="ord">Ord</label>
     <input id='ord' type="text" name="track[ord]" value="<%= @track.ord %>" placeholder="ord">
 
-    <div class="radios">
+
       <label for="regular">Bonus?: </label>
       <input type="checkbox" name="track[regular]" value="false" id="regular">
 
       <label for="album">Album: </label>
-      <div class="select-style">
-        <select id='album' name="track[album_id]">
-          <% Album.all.each do |album| %>
-          <option value="<%= album.id %>"><%= album.title %></option>
-          <% end %>
-        </select>
-      </div>
-    </div>
+      <select id='album' name="track[album_id]">
+        <% Album.all.each do |album| %>
+        <option value="<%= album.id %>"><%= album.title %></option>
+        <% end %>
+      </select>
+
     <label for="lyrics">Lyrics</label>
     <textarea id='lyrics' name="track[lyrics]" rows="8" cols="80"><%= @track.lyrics %></textarea>
 

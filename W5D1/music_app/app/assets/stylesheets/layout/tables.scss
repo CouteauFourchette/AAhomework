@@ -8,8 +8,12 @@ table {
     color: $white;
   }
 
+  tr {
+    padding: 15px 0px 15px 0px;
+  }
+
   tr:nth-child(odd) {
-    background-color: $light-grey;
+    background-color: $highlight;
   }
 
   th {

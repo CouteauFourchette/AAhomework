@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  toyable: one
+  toyable_type: Toyable
+  name: MyString
+
+two:
+  toyable: two
+  toyable_type: Toyable
+  name: MyString
