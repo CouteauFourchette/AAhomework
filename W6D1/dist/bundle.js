@@ -82,33 +82,23 @@ canvas.width = 500;
 //   ctx.fillStyle = 'blue';
 //   ctx.fillRect(i * 10, 200, 5, -el);
 // }
-let cards = __WEBPACK_IMPORTED_MODULE_0__card__["a" /* default */].generateCards();
-for (let i = 0; i < cards.length; i += 1) {
-  console.log(cards[i].height);
-}
 
-function setNextPositions() {
-  const left = [];
-  const right = [];
-  for (let i = 1; i < cards.length; i += 1) {
-    if (cards[i].height < cards[0].height) {
-      left.push((cards[i]));
-    } else {
-      right.push((cards[i]));
-    }
-  }
-  cards[0].nextPosition = left.length;
+function setNextPositions(shift, left, pivot, right) {
+  // const start = 0;
+  // console.log(start);
+  pivot.nextPosition = shift + left.length;
   left.forEach((el, i) => {
-    el.nextPosition = i;
+    el.nextPosition = shift + i;
   });
   right.forEach((el, i) => {
-    el.nextPosition = (left.length + 1 + i);
+    el.nextPosition = shift + (left.length + 1 + i);
   });
-  left.push(cards[0]);
-  cards = left.concat(right);
+  const result = left.slice(0);
+  result.push(pivot);
+  return result.concat(right);
 }
 
-function selectCard() {
+function selectCard(cards) {
   ctx.clearRect(0, 0, 300, 300);
   ctx.fillStyle = 'rgb(99,138,127)';
   let finishedCycle = true;
@@ -121,14 +111,10 @@ function selectCard() {
   });
   if (!finishedCycle) {
     window.requestAnimationFrame(selectCard);
-  } else {
-    setNextPositions();
-    console.log(cards);
-    window.requestAnimationFrame(moveToNextPosition);
   }
 }
 
-function moveToNextPosition() {
+function moveToNextPosition(cards) {
   ctx.clearRect(0, 0, 300, 300);
   ctx.fillStyle = 'rgb(99,138,127)';
   let finishedCycle = true;
@@ -140,14 +126,44 @@ function moveToNextPosition() {
     }
   });
   if (!finishedCycle) {
-    window.requestAnimationFrame(moveToNextPosition);
-  } else {
-    window.requestAnimationFrame(selectCard);
+    window.requestAnimationFrame(() => {
+      moveToNextPosition(cards);
+    });
   }
 }
 
+function quickSort(cards, start, end) {
+  if (start > end) {
+    return [];
+  }
+  const pivot = cards[0]; // using first element as pivot
+  pivot.selected = true;
+  const left = [];
+  const right = [];
+  for (let i = start; i <= end; i += 1) {
+    const element = cards[i];
+    if (element.height < pivot.height) {
+      left.push(element);
+    } else {
+      right.push(element);
+    }
+  }
+  const nextCards = setNextPositions(start, left, pivot, right);
+  window.requestAnimationFrame(() => {
+    moveToNextPosition(nextCards);
+  });
+  // console.log(nextCards);
+  pivot.selected = false;
+  // return
+  return quickSort(nextCards, start, start + left.length - 1).concat([pivot], quickSort(right, start + left.length + 1, end));
+}
+
 function init() {
-  window.requestAnimationFrame(selectCard);
+  const cards = __WEBPACK_IMPORTED_MODULE_0__card__["a" /* default */].generateCards();
+
+  window.requestAnimationFrame(() => {
+    quickSort(cards, 0, cards.length - 1);
+  });
 }
 
 init();
@@ -172,7 +188,7 @@ class Card {
     ctx.save();
     if (this.selected) {
       ctx.fillStyle = 'red';
-      this.moveUp();
+      // this.moveUp();
     }
     ctx.fillRect(((this.position * 10) + this.x), (200 + this.y), 5, -this.height);
     ctx.restore();
@@ -203,7 +219,7 @@ class Card {
 
   static generateCards(numberOfCards = 20) {
     const cards = [];
-    for (let i = 0; i < numberOfCards; i += 1) {
+    for (let i = 0; i <= numberOfCards; i += 1) {
       const height = Math.floor((Math.random() * 60) + 10);
       const card = new Card(i, height);
       cards.push(card);

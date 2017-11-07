@@ -10,53 +10,39 @@ canvas.width = 500;
 //   ctx.fillStyle = 'blue';
 //   ctx.fillRect(i * 10, 200, 5, -el);
 // }
-let cards = Card.generateCards();
-for (let i = 0; i < cards.length; i += 1) {
-  console.log(cards[i].height);
-}
 
-function setNextPositions() {
-  const left = [];
-  const right = [];
-  for (let i = 1; i < cards.length; i += 1) {
-    if (cards[i].height < cards[0].height) {
-      left.push((cards[i]));
-    } else {
-      right.push((cards[i]));
-    }
-  }
-  cards[0].nextPosition = left.length;
+function setNextPositions(shift, left, pivot, right) {
+  // const start = 0;
+  // console.log(start);
+  pivot.nextPosition = shift + left.length;
   left.forEach((el, i) => {
-    el.nextPosition = i;
+    el.nextPosition = shift + i;
   });
   right.forEach((el, i) => {
-    el.nextPosition = (left.length + 1 + i);
+    el.nextPosition = shift + (left.length + 1 + i);
   });
-  left.push(cards[0]);
-  cards = left.concat(right);
+  const result = left.slice(0);
+  result.push(pivot);
+  return result.concat(right);
 }
 
-function selectCard() {
-  ctx.clearRect(0, 0, 300, 300);
-  ctx.fillStyle = 'rgb(99,138,127)';
-  let finishedCycle = true;
-  cards[0].selected = true;
-  cards.forEach((card) => {
-    card.render(ctx);
-    if (card.moving === true) {
-      finishedCycle = false;
-    }
-  });
-  if (!finishedCycle) {
-    window.requestAnimationFrame(selectCard);
-  } else {
-    setNextPositions();
-    console.log(cards);
-    window.requestAnimationFrame(moveToNextPosition);
-  }
-}
+// function selectCard(cards) {
+//   ctx.clearRect(0, 0, 300, 300);
+//   ctx.fillStyle = 'rgb(99,138,127)';
+//   let finishedCycle = true;
+//   cards[0].selected = true;
+//   cards.forEach((card) => {
+//     card.render(ctx);
+//     if (card.moving === true) {
+//       finishedCycle = false;
+//     }
+//   });
+//   if (!finishedCycle) {
+//     window.requestAnimationFrame(selectCard);
+//   }
+// }
 
-function moveToNextPosition() {
+function moveToNextPosition(cards) {
   ctx.clearRect(0, 0, 300, 300);
   ctx.fillStyle = 'rgb(99,138,127)';
   let finishedCycle = true;
@@ -68,14 +54,44 @@ function moveToNextPosition() {
     }
   });
   if (!finishedCycle) {
-    window.requestAnimationFrame(moveToNextPosition);
-  } else {
-    window.requestAnimationFrame(selectCard);
+    window.requestAnimationFrame(() => {
+      moveToNextPosition(cards);
+    });
   }
 }
 
+function quickSort(cards, start, end) {
+  if (start > end) {
+    return [];
+  }
+  const pivot = cards[start]; // using first element as pivot
+  pivot.selected = true;
+  const left = [];
+  const right = [];
+  for (let i = start; i <= end; i += 1) {
+    const element = cards[i];
+    if (element.height < pivot.height) {
+      left.push(element);
+    } else {
+      right.push(element);
+    }
+  }
+  const nextCards = setNextPositions(start, left, pivot, right);
+  window.requestAnimationFrame(() => {
+    moveToNextPosition(nextCards);
+  });
+  // console.log(nextCards);
+  pivot.selected = false;
+  return
+  return quickSort(nextCards, start, start + left.length - 1).concat([pivot], quickSort(right, start + left.length + 1, end));
+}
+
 function init() {
-  window.requestAnimationFrame(selectCard);
+  const cards = Card.generateCards();
+
+  window.requestAnimationFrame(() => {
+    quickSort(cards, 0, cards.length - 1);
+  });
 }
 
 init();

@@ -12,7 +12,7 @@ class Card {
     ctx.save();
     if (this.selected) {
       ctx.fillStyle = 'red';
-      this.moveUp();
+      // this.moveUp();
     }
     ctx.fillRect(((this.position * 10) + this.x), (200 + this.y), 5, -this.height);
     ctx.restore();
@@ -43,7 +43,7 @@ class Card {
 
   static generateCards(numberOfCards = 20) {
     const cards = [];
-    for (let i = 0; i < numberOfCards; i += 1) {
+    for (let i = 0; i <= numberOfCards; i += 1) {
       const height = Math.floor((Math.random() * 60) + 10);
       const card = new Card(i, height);
       cards.push(card);
