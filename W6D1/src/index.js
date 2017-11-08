@@ -2,96 +2,84 @@ import Card from './card';
 
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
-canvas.height = 500;
-canvas.width = 500;
+canvas.height = 600;
+canvas.width = 600;
 
-// function animateN(i, el) {
-//   ctx.clearRect(i * 10, 200, 5, -100);
-//   ctx.fillStyle = 'blue';
-//   ctx.fillRect(i * 10, 200, 5, -el);
-// }
-
-function setNextPositions(shift, left, pivot, right) {
-  // const start = 0;
-  // console.log(start);
-  pivot.nextPosition = shift + left.length;
-  left.forEach((el, i) => {
-    el.nextPosition = shift + i;
-  });
-  right.forEach((el, i) => {
-    el.nextPosition = shift + (left.length + 1 + i);
-  });
-  const result = left.slice(0);
-  result.push(pivot);
-  return result.concat(right);
-}
-
-// function selectCard(cards) {
-//   ctx.clearRect(0, 0, 300, 300);
-//   ctx.fillStyle = 'rgb(99,138,127)';
-//   let finishedCycle = true;
-//   cards[0].selected = true;
-//   cards.forEach((card) => {
-//     card.render(ctx);
-//     if (card.moving === true) {
-//       finishedCycle = false;
-//     }
-//   });
-//   if (!finishedCycle) {
-//     window.requestAnimationFrame(selectCard);
-//   }
-// }
-
-function moveToNextPosition(cards) {
-  ctx.clearRect(0, 0, 300, 300);
+function moveToNextPosition(cards, pivotPos, low, high) {
+  ctx.clearRect(0, 0, 600, 200);
   ctx.fillStyle = 'rgb(99,138,127)';
   let finishedCycle = true;
-  cards.forEach((card) => {
-    card.render(ctx);
-    card.moveToPosition();
-    if (card.moving === true) {
+  
+  for (let i = low; i <= high; i += 1) {
+    cards[i].moveToPosition();
+    if (cards[i].moving === true) {
       finishedCycle = false;
     }
+  }
+  cards.forEach((card) => {
+    card.render(ctx);
   });
+
   if (!finishedCycle) {
     window.requestAnimationFrame(() => {
-      moveToNextPosition(cards);
+      moveToNextPosition(cards, pivotPos, low, high);
+    });
+  } else {
+    setTimeout( () => {
+      console.log('calling this again');
+      console.log(low);
+      cards[pivotPos].selected = false;
+      quickSort(cards, low, pivotPos - 1);
+      quickSort(cards, pivotPos + 1, high);
+      }, 1000);
+  }
+}
+
+function swapCard(cards, i, j) {
+  cards[i].nextPosition = j;
+  cards[j].nextPosition = i;
+  const swap = cards[i];
+  cards[i] = cards[j];
+  cards[j] = swap;
+}
+
+function partition(arr, low, high) {
+  const pivot = arr[high];
+  let i = low - 1;
+  for (let j = low; j < high; j += 1) {
+    if (arr[j].height < pivot.height) {
+      i += 1;
+      swapCard(arr, i, j);
+    }
+  }
+  swapCard(arr, i + 1, high);
+  return (i + 1);
+}
+
+function quickSort(cards, low, high) {
+  if (low < high) {
+    const pivotPos = partition(cards, low, high);
+    window.requestAnimationFrame(() => {
+      cards[pivotPos].selected = true;
+      moveToNextPosition(cards, pivotPos, low, high);
     });
   }
 }
 
-function quickSort(cards, start, end) {
-  if (start > end) {
-    return [];
-  }
-  const pivot = cards[start]; // using first element as pivot
-  pivot.selected = true;
-  const left = [];
-  const right = [];
-  for (let i = start; i <= end; i += 1) {
-    const element = cards[i];
-    if (element.height < pivot.height) {
-      left.push(element);
-    } else {
-      right.push(element);
-    }
-  }
-  const nextCards = setNextPositions(start, left, pivot, right);
-  window.requestAnimationFrame(() => {
-    moveToNextPosition(nextCards);
-  });
-  // console.log(nextCards);
-  pivot.selected = false;
-  return
-  return quickSort(nextCards, start, start + left.length - 1).concat([pivot], quickSort(right, start + left.length + 1, end));
-}
+// const cards = Card.generateCards();
+// quickSort(cards, 0, cards.length - 1);
+// console.log(cards);
+// cards.forEach((card) => {
+//   console.log(card.height);
+// });
 
 function init() {
-  const cards = Card.generateCards();
+  const cards = Card.generateCards(50);
 
   window.requestAnimationFrame(() => {
     quickSort(cards, 0, cards.length - 1);
   });
+  console.log(cards);
 }
 
 init();
