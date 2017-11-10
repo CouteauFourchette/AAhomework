@@ -13,6 +13,7 @@ class Card {
     if (this.selected) {
       ctx.fillStyle = 'red';
       // this.moveUp();
+      // this.moveToPosition();
     }
     ctx.fillRect(((this.position * 10) + this.x), (200 + this.y), 5, -this.height);
     ctx.restore();

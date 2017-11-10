@@ -5,33 +5,47 @@ const ctx = canvas.getContext('2d');
 canvas.height = 600;
 canvas.width = 600;
 
-function moveToNextPosition(cards, pivotPos, low, high) {
+
+function render(cards) {
   ctx.clearRect(0, 0, 600, 200);
   ctx.fillStyle = 'rgb(99,138,127)';
+  cards.forEach((card) => {
+    card.render(ctx);
+  });
+}
+
+// function selectCard(cards, pivotPos, low, high) {
+//   render(cards);
+//   if (cards[pivotPos].moving) {
+//     window.requestAnimationFrame(() => {
+//       selectCard(cards, pivotPos, low, high);
+//     });
+//   } else {
+//     window.requestAnimationFrame(() => {
+//       moveToNextPosition(cards, pivotPos, low, high);
+//     });
+//   }
+// }
+
+function moveToNextPosition(cards, pivotPos, low, high, doneCallback) {
   let finishedCycle = true;
-  
+  cards[pivotPos].selected = true;
   for (let i = low; i <= high; i += 1) {
     cards[i].moveToPosition();
     if (cards[i].moving === true) {
       finishedCycle = false;
     }
   }
-  cards.forEach((card) => {
-    card.render(ctx);
-  });
-
+  render(cards);
   if (!finishedCycle) {
     window.requestAnimationFrame(() => {
-      moveToNextPosition(cards, pivotPos, low, high);
+      moveToNextPosition(cards, pivotPos, low, high, doneCallback);
     });
   } else {
-    setTimeout( () => {
-      console.log('calling this again');
-      console.log(low);
+    setTimeout(() => {
       cards[pivotPos].selected = false;
-      quickSort(cards, low, pivotPos - 1);
-      quickSort(cards, pivotPos + 1, high);
-      }, 1000);
+      doneCallback();
+    }, 1000);
   }
 }
 
@@ -60,18 +74,14 @@ function quickSort(cards, low, high) {
   if (low < high) {
     const pivotPos = partition(cards, low, high);
     window.requestAnimationFrame(() => {
-      cards[pivotPos].selected = true;
-      moveToNextPosition(cards, pivotPos, low, high);
+      // cards[pivotPos].selected = true;
+      moveToNextPosition(cards, pivotPos, low, high, () => {
+        quickSort(cards, pivotPos + 1, high);
+        quickSort(cards, low, pivotPos - 1);
+      });
     });
   }
 }
-
-// const cards = Card.generateCards();
-// quickSort(cards, 0, cards.length - 1);
-// console.log(cards);
-// cards.forEach((card) => {
-//   console.log(card.height);
-// });
 
 function init() {
   const cards = Card.generateCards(50);
