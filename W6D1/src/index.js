@@ -2,7 +2,7 @@ import Card from './card';
 
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
-canvas.height = 600;
+canvas.height = 300;
 canvas.width = 600;
 
 
@@ -13,19 +13,6 @@ function render(cards) {
     card.render(ctx);
   });
 }
-
-// function selectCard(cards, pivotPos, low, high) {
-//   render(cards);
-//   if (cards[pivotPos].moving) {
-//     window.requestAnimationFrame(() => {
-//       selectCard(cards, pivotPos, low, high);
-//     });
-//   } else {
-//     window.requestAnimationFrame(() => {
-//       moveToNextPosition(cards, pivotPos, low, high);
-//     });
-//   }
-// }
 
 function moveToNextPosition(cards, pivotPos, low, high, doneCallback) {
   let finishedCycle = true;
@@ -74,20 +61,65 @@ function quickSort(cards, low, high) {
   if (low < high) {
     const pivotPos = partition(cards, low, high);
     window.requestAnimationFrame(() => {
-      // cards[pivotPos].selected = true;
+
       moveToNextPosition(cards, pivotPos, low, high, () => {
-        quickSort(cards, pivotPos + 1, high);
         quickSort(cards, low, pivotPos - 1);
+        quickSort(cards, pivotPos + 1, high);
       });
     });
   }
 }
 
+function bubbleSort(cards) {
+  let sorted = true;
+  for (let i = 1; i <  cards.length; i += 1) {
+    if (cards[i].height < cards[i - 1].height) {
+      swapCard(cards, i, i - 1);
+      sorted = false;
+    }
+  }
+  if (!sorted) {
+    window.requestAnimationFrame(() => {
+      moveToNextPosition(cards, 0, 0, cards.length - 1, () => {
+        bubbleSort(cards);
+      });
+    });
+  }
+}
+
+function shuffle(cards) {
+  for (let i = 0; i < cards.length; i += 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    swapCard(cards, i, j);
+  }
+  window.requestAnimationFrame(() => {
+    moveToNextPosition(cards, 0, 0, cards.length - 1);
+  });
+}
+
+
 function init() {
   const cards = Card.generateCards(50);
 
-  window.requestAnimationFrame(() => {
-    quickSort(cards, 0, cards.length - 1);
+  const quickSortButton = document.querySelector('.quicksort');
+  quickSortButton.addEventListener('click', () => {
+    window.requestAnimationFrame(() => {
+      quickSort(cards, 0, cards.length - 1);
+    });
+    
+    const bubbleSortButton = document.querySelector('.bubblesort');
+    bubbleSortButton.addEventListener('click', () => {
+      window.requestAnimationFrame(() => {
+        bubbleSort(cards);
+      });
+    });
+
+    const shuffleButton = document.querySelector('.shuffle');
+    bubbleSortButton.addEventListener('click', () => {
+      window.requestAnimationFrame(() => {
+        shuffle(cards);
+      });
+    });
   });
   console.log(cards);
 }
